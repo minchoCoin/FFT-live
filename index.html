@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>실시간 마이크 FFT & Mel Spectrogram</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>실시간 마이크 FFT & Mel Spectrogram</h1>
+    <p>마이크 입력을 받아 주파수 스펙트럼(dB)과 <b>Mel 스펙트로그램</b>을 실시간 시각화합니다.</p>
+  </header>
+
+  <!-- 컨트롤 패널 -->
+  <section class="panel">
+    <div class="controls">
+      <div class="device">
+        <label for="deviceSelect">입력 장치</label>
+        <select id="deviceSelect" title="오디오 입력 장치"></select>
+      </div>
+
+      <div class="fft">
+        <label for="fftSize">FFT 크기</label>
+        <select id="fftSize">
+          <option>512</option>
+          <option selected>1024</option>
+          <option>2048</option>
+          <option>4096</option>
+          <option>8192</option>
+          <option>16384</option>
+        </select>
+      </div>
+
+      <div class="smoothing">
+        <label for="smoothing">평활화(Smoothing)</label>
+        <input id="smoothing" type="range" min="0" max="0.95" step="0.01" value="0.6" />
+      </div>
+
+      <div class="scale">
+        <label for="scale">주파수 축</label>
+        <select id="scale">
+          <option value="log" selected>로그(Log)</option>
+          <option value="linear">선형(Linear)</option>
+        </select>
+      </div>
+
+      <div class="melBands">
+        <label for="melBands">Mel 밴드 수</label>
+        <select id="melBands">
+          <option>40</option>
+          <option selected>64</option>
+          <option>80</option>
+          <option>128</option>
+        </select>
+      </div>
+
+      <div class="melRange">
+        <label for="melRange">Mel dB 다이내믹레인지</label>
+        <select id="melRange">
+          <option value="60">60 dB</option>
+          <option value="80" selected>80 dB</option>
+          <option value="100">100 dB</option>
+        </select>
+      </div>
+
+      <div class="start">
+        <label>&nbsp;</label>
+        <button id="startBtn" class="primary">마이크 시작</button>
+      </div>
+      <div class="stop">
+        <label>&nbsp;</label>
+        <button id="stopBtn" disabled>정지</button>
+      </div>
+    </div>
+
+    <div class="grid-labels" id="stats">
+      <span class="stat" id="sr">Sample Rate: -</span>
+      <span class="stat" id="nyq">Nyquist: -</span>
+      <span class="stat" id="fftStat">FFT: 1024</span>
+      <span class="stat" id="smoothStat">Smoothing: 0.60</span>
+      <span class="stat" id="scaleStat">Scale: Log</span>
+      <span class="stat" id="melStat">Mel: 64 bands</span>
+    </div>
+  </section>
+
+  <!-- 상단: 선형 스펙트럼(FFT) -->
+  <section class="panel">
+    <h3 class="panel-title">주파수 스펙트럼 (dB)</h3>
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="spectrum"></canvas>
+      <div class="tooltip" id="tooltip"></div>
+    </div>
+  </section>
+  <!-- 일반 스펙트로그램 (멜 필터 미적용, 순수 FFT) -->
+<section class="panel">
+  <h3 class="panel-title">Spectrogram (Raw FFT)</h3>
+  <div class="canvas-wrap" id="specgramWrap">
+    <canvas id="specgramCanvas"></canvas>
+  </div>
+  <div class="legend">
+    <span>어두움: 낮은 에너지</span>
+    <span>밝음: 높은 에너지</span>
+  </div>
+</section>
+  <!-- 하단: Mel 스펙트로그램 -->
+  <section class="panel">
+    <h3 class="panel-title">Mel Spectrogram</h3>
+    <div class="canvas-wrap" id="melWrap">
+      <canvas id="melCanvas"></canvas>
+    </div>
+    <div class="legend">
+      <span>어두움: 낮은 에너지</span>
+      <span>밝음: 높은 에너지</span>
+    </div>
+  </section>
+
+  <footer>
+    <p>이 페이지는 마이크 신호를 <b>스피커로 출력하지 않습니다</b> (피드백 방지). HTTPS(또는 <code>localhost</code>)에서 실행하세요.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
